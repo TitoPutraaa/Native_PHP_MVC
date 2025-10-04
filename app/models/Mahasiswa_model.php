@@ -1,40 +1,34 @@
 <?php 
 
 class Mahasiswa_model {
-    // private $mhs = [
-    //     [
-    //         "Nama" => "Tito Putra Bamulo",
-    //         "NIM" => "2415354011",
-    //         "Jurusan" => "Teknologi Informasi"
-    //     ],
-    //     [
-    //         "Nama" => "Sesilia Dehar",
-    //         "NIM" => "2415354033",
-    //         "Jurusan" => "Menejemen Bisnis"
-    //     ],
-    //     [
-    //         "Nama" => "Pramudya anantatoer",
-    //         "NIM" => "2415354099",
-    //         "Jurusan" => "Sastra Indonesia"
-    //     ],
-    //     ];
-
-    private $dbh;
-    private $stmt;
+    private $table = 'mahasiswa';
+    private $db;
 
     public function __construct() {
-        $dsn = 'mysql:host=localhost;dbname=MVC';
-
-        try {
-            $this->dbh = new PDO($dsn,'root', '');
-        } catch (PDOException $e) {
-            die($e->getMessage());
-        }
+        $this->db = new Database;
     }
 
-        public function getAllMahasiswa() {
-            $this->stmt = $this->dbh->prepare('SELECT * FROM Mahasiswa');
-            $this->stmt->execute();
-            return $this->stmt->fetchAll();
-        }
+    public function getAllMahasiswa() {
+        $this->db->query('SELECT * FROM ' . $this->table);
+        return $this->db->resultSet();
     }
+
+    public function getMahasiswaById($id) {
+        $this->db->query('SELECT * FROM ' . $this->table . ' WHERE id=:id');
+        $this->db->bind('id', $id);
+        return $this->db->single();
+    }
+
+    public function tambahDataMahasiswa($data) {
+        $query = "INSERT INTO mahasiswa 
+                  VALUES ('', :nama, :NIM, :jurusan)";
+
+        $this->db->query($query);
+        $this->db->bind('nama', $data['nama']);
+        $this->db->bind('NIM', $data['NIM']);
+        $this->db->bind('jurusan', $data['jurusan']);
+        $this->db->execute();
+
+        return $this->db->rowCount();
+    }
+}

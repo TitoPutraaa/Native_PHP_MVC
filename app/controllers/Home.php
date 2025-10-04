@@ -6,6 +6,6 @@ class Home extends Controller {
         $data['user'] = $this->model('User_model')->getuser();  
         $this->views('tamplates/header.php', $data);
         $this->views('home/index.php', $data);
-        $this->views('tamplates/footer.php');            
+        $this->views('tamplates/footer.php');       
     }
 }
